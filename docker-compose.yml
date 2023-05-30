@@ -1,0 +1,45 @@
+version: '3.8'
+services:
+  mysql:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: sldBN73@(
+      MYSQL_DATABASE: transactionsdb
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: xdfGT45^&
+      MYSQL_ROOT_HOST: '%'
+    networks:
+      - mynetwork
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./data:/var/lib/mysql
+      - ./init.sql:/data/application/init.sql
+    command: --init-file /data/application/init.sql
+
+  java_app:
+    build:
+      dockerfile: Dockerfile
+    depends_on:
+      - mysql
+    links:
+      - mysql
+    networks:
+      - mynetwork
+    ports:
+      - "8080:8080"
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: transactionsdb
+      DB_USERNAME: admin
+      DB_PASSWORD: xdfGT45^&
+
+networks:
+  mynetwork:
+    driver: bridge
+
+volumes:
+  db:
+    driver: local
